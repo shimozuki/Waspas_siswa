@@ -4,13 +4,13 @@
             <div class="mr-auto place-self-center lg:col-span-7">
                 <h1
                     class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
-                    Sistem Pendukung Keputusan Pemilihan Jurusan MAN 3 Langkat</h1>
+                    Sistem Pendukung Keputusan Test SNBP SMK 1 Terano</h1>
                 <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-                    Sistem Pendukung Keputusan penentuan Jurusan Siswa menggunakan Metode WASPAS</p>
+                    Sistem Pendukung Keputusan penentuan Kelayakan untuk SNBP SMK 1 Terano menggunakan Metode WASPAS</p>
                 @if ($data['hasil'] != 0)
                     <a href="{{ route('guest.result.index') }}"
                         class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                        Lihat Hasil Penjurusan
+                        Pengumuman HaSil Seleksi
                         <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -26,7 +26,7 @@
         </div>
     </section>
     <section class="bg-gray-50 dark:bg-gray-900" id="search">
-        <div class="feature-1 py-8 md:py-12 px-4">
+        <div class="feature-1 py-8 md:py-12 px-4"> 
             <div class="container px-4 mx-auto">
                 <div class="flex -mx-4">
                     <div class="px-4 text-center md:w-10/12 xl:w-8/12 mx-auto">
@@ -109,7 +109,7 @@
                             </div>
                             <h5 class="text-xl font-medium mb-4">Laki-Laki</h5>
                             <p class="text-gray-600 mb-3">
-                                Jumlah laki-laki yang berada di MAN 3 Langkat adalah <span
+                                Jumlah laki-laki yang berada di SMK 1 Terano Langkat adalah <span
                                     class="font-bold">{{ $data['male'] }}</span> Jiwa
                             </p>
                         </div>
@@ -122,7 +122,7 @@
                             </div>
                             <h5 class="text-xl font-medium mb-4">Perempuan</h5>
                             <p class="text-gray-600 mb-3">
-                                Jumlah Perempuan yang berada di MAN 3 Langkat adalah <span
+                                Jumlah Perempuan yang berada di SMK 1 Terano adalah <span
                                     class="font-bold">{{ $data['female'] }}</span> Jiwa
                             </p>
                         </div>
@@ -135,39 +135,11 @@
                             </div>
                             <h5 class="text-xl font-medium mb-4">Total</h5>
                             <p class="text-gray-600 mb-3">
-                                Jumlah Total Laki-Laki dan Perempuan yang berada di MAN 3 Langkat adalah
+                                Jumlah Total Laki-Laki dan Perempuan yang berada di SMK 1 Terano adalah
                                 <span class="font-bold">{{ $data['total'] }}</span> Jiwa
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="bg-gray-50 dark:bg-gray-900" id="penjurusan">
-        <div class="feature-1 py-8 md:py-12 px-4">
-            <div class="container px-4 mx-auto">
-                <div class="flex -mx-4">
-                    <div class="px-4 text-center md:w-10/12 xl:w-8/12 mx-auto">
-                        <h1 class="mb-4 text-4xl font-medium uppercase">Penjurusan</h1>
-                    </div>
-                </div>
-                <div class="md:flex md:-mx-4 mt-12 md:pt-4">
-                    @foreach ($data['jurusan'] as $jurusan)
-                        <div class="px-4 md:w-1/3 mt-6 md:mt-0">
-                            <div
-                                class="feature-box text-center p-4 md:p-6 max-w-sm mx-auto border-2 border-solid border-gray-300 rounded md:h-full">
-                                <div class="text-xl p-4 w-16 h-16 mx-auto">
-                                    <i class="fas fa-building-columns text-indigo-600 text-2xl"></i>
-                                </div>
-                                <h5 class="text-xl font-medium mb-4">{{ $jurusan->nama }}</h5>
-                                <p class="text-gray-600 mb-3">
-                                    Jurusan <span class="font-bold">{{ $jurusan->nama }}</span> Memiliki Quota Sebanyak
-                                    <span class="font-bold">{{ $jurusan->quota }}</span> Siswa
-                                </p>
-                            </div>
-                        </div>
-                    @endforeach
                 </div>
             </div>
         </div>
@@ -188,8 +160,7 @@
                                 Alamat
                             </h1>
                             <p class="font-semibolg text-gray-500 text-lg">
-                                Jl. Proklamasi No.54, Kwala Bingai, Kec. Stabat,
-                                Kabupaten Langkat, Sumatera Utara 20811
+                                Bantulanteh, Tarano, Sumbawa Regency, West Nusa Tenggara 84384
                             </p>
                         </div>
                         <div class="mb-4">
@@ -203,10 +174,7 @@
                         </div>
                     </div>
                     <div class="p-2">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3981.427256183279!2d98.42258327584386!3d3.716599249400661!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30372b3bc8c7eb9d%3A0xeb6ade8b7c33c6a2!2sMAN%203%20LANGKAT!5e0!3m2!1sid!2sid!4v1721038538271!5m2!1sid!2sid"
-                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15773.916534486474!2d118.0047274!3d-8.7409072!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dca55c291d38de1%3A0xa54000522aebe5e2!2sSMKN%201%20TARANO!5e0!3m2!1sen!2sid!4v1733363989582!5m2!1sen!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>
             </div>

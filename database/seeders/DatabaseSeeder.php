@@ -16,12 +16,7 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            DashboardTableSeeder::class,
             UserSeeder::class,
-            JurusanSeeder::class,
-            NilaiSeeder::class,
-            AttributeSeeder::class,
-            SubKriteriaSeeder::class
         ]);
     }
 }

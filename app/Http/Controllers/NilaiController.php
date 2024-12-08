@@ -6,6 +6,7 @@ use App\Models\Nilai;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class NilaiController extends Controller
 {
@@ -39,10 +40,14 @@ class NilaiController extends Controller
     public function destroy(Request $request)
     {
         $nilai = Nilai::findOrFail($request->id);
-        try{
+
+        try {
+            DB::table('sub_attributes')->where('nilai_id', $nilai->id)->delete();
             $nilai->delete();
-        }catch(Exception $e){
-            return redirect()->back()->with('error', $e->getMessage());
+
+            return redirect()->back()->with('success', 'Data berhasil dihapus.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 }

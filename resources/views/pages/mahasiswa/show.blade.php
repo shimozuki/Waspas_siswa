@@ -63,4 +63,11 @@
             </a>
         </div>
     </div>
+    <style>
+        .dataTables_length select {
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
 </x-app-layout>

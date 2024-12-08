@@ -95,5 +95,12 @@
                 });
             }
         </script>
+        <style>
+            .dataTables_length select {
+                width: 100px;
+                padding: 5px;
+                font-size: 14px;
+            }
+        </style>
     @endpush
 </x-app-layout>

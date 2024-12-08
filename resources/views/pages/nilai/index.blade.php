@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+    <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-10xl mx-auto">
 
         <div class="sm:flex sm:justify-between sm:items-center mb-8">
             <a href="{{ route('nilai.create') }}" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
@@ -13,7 +13,7 @@
                 <header class="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
                     <h2 class="font-semibold text-slate-800 dark:text-slate-100">Nilai</h2>
                 </header>
-                <div class="p-3">
+                <div class="p-3 w-full">
 
                     <!-- Table -->
                     <table id="tableIndex" class="w-full">
@@ -99,5 +99,12 @@
                 });
             }
         </script>
+        <style>
+            .dataTables_length select {
+                width: 100px;
+                padding: 5px;
+                font-size: 14px;
+            }
+        </style>
     @endpush
 </x-app-layout>
