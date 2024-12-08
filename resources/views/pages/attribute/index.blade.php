@@ -2,7 +2,7 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
 
         <div class="sm:flex sm:justify-between sm:items-center mb-8">
-            <a href="{{ route('attribute.create') }}" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
+            <a href="{{ route('attribute.create') }}" class="btn bg-indigo-500 hover:bg-black-600 text-white">
                 <i class="fa-solid fa-plus"></i>
                 <span class="hidden xs:block ml-2">Tambah Kriteria</span>
             </a>

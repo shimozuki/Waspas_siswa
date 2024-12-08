@@ -119,7 +119,7 @@
                     <li
                         class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(2), ['perhitungan'])) {{ 'bg-slate-900' }} @endif">
                         <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(2), ['perhitungan'])) {{ 'hover:text-slate-200' }} @endif"
-                            href="{{ route('perhitungan.index') }}">
+                            href="#">{{ route('perhitungan.index') }}
                             <div class="flex items-center">
                                 <i
                                     class="fa-solid fa-calculator text-xl {{ in_array(Request::segment(2), ['perhitungan']) ? 'text-indigo-500' : 'text-slate-600' }}"></i>
@@ -133,7 +133,7 @@
                     <li
                         class="px-3 py-2 rounded-sm mb-0.5 last:mb-0 @if (in_array(Request::segment(2), ['hasil'])) {{ 'bg-slate-900' }} @endif">
                         <a class="block text-slate-200 hover:text-white truncate transition duration-150 @if (in_array(Request::segment(2), ['hasil'])) {{ 'hover:text-slate-200' }} @endif"
-                            href="{{ route('hasil.index') }}">
+                            href="">{{ route('hasil.index') }}
                             <div class="flex items-center">
                                 <i
                                     class="fa-solid fa-square-poll-vertical text-xl {{ in_array(Request::segment(2), ['hasil']) ? 'text-indigo-500' : 'text-slate-600' }}"></i>
