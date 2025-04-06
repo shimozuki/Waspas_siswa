@@ -32,13 +32,10 @@
                             Jenis Kelamin
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Asal Kelas
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Jurusan
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Hasil Qi
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Keterangan
                         </th>
                     </tr>
                 </thead>
