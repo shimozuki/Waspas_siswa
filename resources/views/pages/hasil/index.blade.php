@@ -56,9 +56,6 @@
                             {{ $row->mahasiswa->jenis_kelamin }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $row->mahasiswa->asal_kelas }}
-                        </td>
-                        <td class="px-6 py-4">
                             {{ $row->jurusan->nama }}
                         </td>
                         <td class="px-6 py-4">

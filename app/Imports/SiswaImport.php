@@ -13,18 +13,18 @@ class SiswaImport implements ToCollection, WithHeadingRow
 {
     public function collection(Collection $collection)
     {
-        try{
+        try {
             $nilai = Nilai::query()->get();
-            foreach($collection as $row){
-                if($row['nama'] != null){
+            foreach ($collection as $row) {
+                if ($row['nama'] != null) {
                     $siswa = Mahasiswa::create([
-                        'no_reg' => $row['no_reg'],
+                        'no_reg' => $row['nisn'],
                         'nama' => $row['nama'],
                         'jenis_kelamin' => $row['jenis_kelamin'],
-                        'asal_kelas' => $row['asal_kelas'],
+                        'asal_kelas' => $row['jurusan'],
                     ]);
-                    foreach($nilai as $kriteria){
-                        if($row[preg_replace('/\s+/', '_', strtolower($kriteria->nama))] != null){
+                    foreach ($nilai as $kriteria) {
+                        if ($row[preg_replace('/\s+/', '_', strtolower($kriteria->nama))] != null) {
                             NilaiSiswa::create([
                                 'mahasiswa_id' => $siswa->id,
                                 'nilai_id' => $kriteria->id,
@@ -34,7 +34,7 @@ class SiswaImport implements ToCollection, WithHeadingRow
                     }
                 }
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
