@@ -31,7 +31,9 @@ class SubAttributeController extends Controller
         $validated = $request->validate([
             'jurusan_id' => ['required'],
             'attribute_id' => ['required'],
-            'nilai_id' => ['required']
+            'nilai_id' => ['required'],
+            'nilai_max' => ['required', 'numeric'],
+            'nilai_min' => ['required', 'numeric'],
         ]);
 
         SubAttribute::create($validated);
@@ -41,9 +43,9 @@ class SubAttributeController extends Controller
     public function destroy(Request $request)
     {
         $subAttribute = SubAttribute::findOrFail($request->id);
-        try{
+        try {
             $subAttribute->delete();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }

@@ -15,7 +15,7 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected>Pilih Jurusan</option>
                                 @foreach ($jurusan as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -25,7 +25,7 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected>Pilih Kriteria</option>
                                 @foreach ($attributes as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -35,10 +35,25 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                 <option selected>Pilih Nilai yg digunakan</option>
                                 @foreach ($nilai as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
+                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
+
+                        <div class="mb-4">
+                            <x-jet-label for="nilai_min" value="{{ __('Nilai Minimal') }}" />
+                            <input type="number" step="0.01" min="0" max="100" name="nilai_min" id="nilai_min"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                placeholder="Masukkan nilai minimal" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <x-jet-label for="nilai_max" value="{{ __('Nilai Maksimal') }}" />
+                            <input type="number" step="0.01" min="0" max="100" name="nilai_max" id="nilai_max"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                placeholder="Masukkan nilai maksimal" required />
+                        </div>
+
 
                         <x-jet-validation-errors class="mb-4" />
                         <div class="flex flex-wrap justify-between">

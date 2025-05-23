@@ -28,7 +28,13 @@
                                     <div class="font-semibold text-left">Kriteria</div>
                                 </th>
                                 <th class="p-2">
-                                    <div class="font-semibold text-left">Nilai</div>
+                                    <div class="font-semibold text-left">Nilai Minimal</div>
+                                </th>
+                                <th class="p-2">
+                                    <div class="font-semibold text-left">Nilai Maximal</div>
+                                </th>
+                                <th class="p-2">
+                                    <div class="font-semibold text-left">keterangan</div>
                                 </th>
                                 <th class="p-2">
                                     <div class="font-semibold text-left">Aksi</div>
@@ -38,22 +44,28 @@
                         <!-- Table body -->
                         <tbody class="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700">
                             @foreach ($data as $row)
-                                <tr>
-                                    <td class="p-2">
-                                        <div class="font-semibold text-left">{{ $row->jurusan->nama }}</div>
-                                    </td>
-                                    <td class="p-2">
-                                        <div class="font-semibold text-left">{{ $row->attribute->nama }}</div>
-                                    </td>
-                                    <td class="p-2">
-                                        <div class="font-semibold text-left">{{ $row->nilai->nama }}</div>
-                                    </td>
-                                    <td class="p-2">
-                                        <button onclick="showModals({{ $row->id }})"
-                                            class="btn bg-red-600 hover:bg-red-700 text-white">
-                                            <i class="fa-solid fa-trash"></i></button>
-                                    </td>
-                            @endforeach
+                            <tr>
+                                <td class="p-2">
+                                    <div class="font-semibold text-left">{{ $row->jurusan->nama }}</div>
+                                </td>
+                                <td class="p-2">
+                                    <div class="font-semibold text-left">{{ $row->attribute->nama }}</div>
+                                </td>
+                                <td class="p-2">
+                                    <div class="font-semibold text-left">{{ $row->nilai_min }}</div>
+                                </td>
+                                <td class="p-2">
+                                    <div class="font-semibold text-left">{{ $row->nilai_max }}</div>
+                                </td>
+                                <td class="p-2">
+                                    <div class="font-semibold text-left">{{ $row->nilai->nama }}</div>
+                                </td>
+                                <td class="p-2">
+                                    <button onclick="showModals({{ $row->id }})"
+                                        class="btn bg-red-600 hover:bg-red-700 text-white">
+                                        <i class="fa-solid fa-trash"></i></button>
+                                </td>
+                                @endforeach
                             </tr>
                         </tbody>
                     </table>
@@ -63,41 +75,41 @@
         {{ $data->links() }}
     </div>
     @push('custom-scripts')
-        <script type="text/javascript">
-            function showModals(id) {
-                Swal.fire({
-                    title: "Yakin ingin Menghapus Data Sub Kriteria Ini ?",
-                    text: "Data Akan Terhapus secara permanen!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Hapus",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{ route('sub-attribute.delete') }}",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                id: id,
-                            }
-                        })
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data Sub Kriteria berhasil dihapus !',
-                            'success',
-                        ).then((after) => location.reload())
-                    }
-                });
-            }
-        </script>
-        <style>
-            .dataTables_length select {
-                width: 100px;
-                padding: 5px;
-                font-size: 14px;
-            }
-        </style>
+    <script type="text/javascript">
+        function showModals(id) {
+            Swal.fire({
+                title: "Yakin ingin Menghapus Data Sub Kriteria Ini ?",
+                text: "Data Akan Terhapus secara permanen!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('sub-attribute.delete') }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            id: id,
+                        }
+                    })
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data Sub Kriteria berhasil dihapus !',
+                        'success',
+                    ).then((after) => location.reload())
+                }
+            });
+        }
+    </script>
+    <style>
+        .dataTables_length select {
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
     @endpush
 </x-app-layout>

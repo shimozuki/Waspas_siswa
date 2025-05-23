@@ -31,6 +31,9 @@
                                     <div class="font-semibold text-left">Bobot Kriteria</div>
                                 </th>
                                 <th class="p-2">
+                                    <div class="font-semibold text-left">Type</div>
+                                </th>
+                                <th class="p-2">
                                     <div class="font-semibold text-left">Aksi</div>
                                 </th>
                             </tr>
@@ -44,63 +47,67 @@
         </div>
     </div>
     @push('custom-scripts')
-        <script>
-            $(document).ready(function() {
-                $('#tableIndex').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: '{{ url()->current() }}',
-                    columns: [{
-                            data: 'nama',
-                            name: 'nama'
-                        },
-                        {
-                            data: 'kode',
-                            name: 'kode'
-                        },
-                        {
-                            data: 'bobot',
-                            name: 'bobot'
-                        },
-                        {
-                            data: 'edit',
-                            name: 'edit'
-                        },
-                    ]
-                });
+    <script>
+        $(document).ready(function() {
+            $('#tableIndex').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ url()->current() }}',
+                columns: [{
+                        data: 'nama',
+                        name: 'nama'
+                    },
+                    {
+                        data: 'kode',
+                        name: 'kode'
+                    },
+                    {
+                        data: 'bobot',
+                        name: 'bobot'
+                    },
+                    {
+                        data: 'tipe',
+                        name: 'tipe'
+                    },
+                    {
+                        data: 'edit',
+                        name: 'edit'
+                    },
+                ]
             });
-        </script>
-        <script type="text/javascript">
-            function showModals(id) {
-                Swal.fire({
-                    title: "Yakin ingin Menghapus Attribute Ini ?",
-                    text: "Data Akan Terhapus secara permanen!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Hapus",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: 'GET',
-                            url: "{{ url()->current() }}" + "/" + "delete" + "/" + id,
-                        });
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data Kriteria berhasil dihapus !',
-                            'success',
-                        ).then((after) => location.reload());
-                    }
-                });
-            }
-        </script>
-        <style>
-            .dataTables_length select {
-                width: 100px;
-                padding: 5px;
-                font-size: 14px;
-            }
-        </style>
+        });
+    </script>
+    <script type="text/javascript">
+        function showModals(id) {
+            Swal.fire({
+                title: "Yakin ingin Menghapus Attribute Ini ?",
+                text: "Data Akan Terhapus secara permanen!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Hapus",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'GET',
+                        url: "{{ url()->current() }}" + "/" + "delete" + "/" + id,
+                    });
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data Kriteria berhasil dihapus !',
+                        'success',
+                    ).then((after) => location.reload());
+                }
+            });
+        }
+    </script>
+    <style>
+        .dataTables_length select {
+            width: 100px;
+            padding: 5px;
+            font-size: 14px;
+        }
+    </style>
     @endpush
 </x-app-layout>

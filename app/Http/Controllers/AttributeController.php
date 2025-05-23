@@ -32,7 +32,8 @@ class AttributeController extends Controller
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'kode' => ['required', 'unique:attributes'],
-            'bobot' => ['required','numeric'],
+            'bobot' => ['required', 'numeric'],
+            'tipe' => ['required', 'in:cost,benefit'],
         ]);
 
         Attribute::create($validated);
@@ -40,7 +41,7 @@ class AttributeController extends Controller
         return redirect()->route('attribute.index')->with('success', 'Kriteria Berhasil ditambahkan!');
     }
 
-    function edit($id) 
+    function edit($id)
     {
         $attribute = Attribute::findOrFail($id);
         return view('pages.attribute.edit', compact('attribute'));
@@ -52,7 +53,8 @@ class AttributeController extends Controller
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'kode' => ['required', 'unique:attributes,kode,' . $attribute->id],
-            'bobot' => ['required','numeric'],
+            'bobot' => ['required', 'numeric'],
+            'tipe' => ['required', 'in:cost,benefit'],
         ]);
         $attribute->update($validated);
         return redirect()->route('attribute.index')->with('success', 'Kriteria berhasil diupdate!');

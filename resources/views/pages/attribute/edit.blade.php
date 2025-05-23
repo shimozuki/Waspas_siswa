@@ -10,20 +10,32 @@
                     <form action="{{ route('attribute.update', $attribute->id) }}" method="POST">
                         @method('PUT')
                         @csrf
+
                         <div class="mb-4">
                             <x-jet-label for="nama" value="{{ __('Nama Kriteria') }}" />
-                            <x-jet-input id="nama" type="text" name="nama" :value="$attribute->nama" required
-                                autofocus />
+                            <x-jet-input id="nama" type="text" name="nama" :value="$attribute->nama" required autofocus />
                         </div>
+
                         <div class="mb-4">
                             <x-jet-label for="kode" value="{{ __('Kode Kriteria') }}" />
                             <x-jet-input id="kode" type="text" name="kode" :value="$attribute->kode" required />
                         </div>
+
                         <div class="mb-4">
                             <x-jet-label for="bobot" value="{{ __('Bobot Kriteria') }}" />
-                            <x-jet-input id="bobot" type="number" name="bobot" required />
+                            <x-jet-input id="bobot" type="number" name="bobot" :value="$attribute->bobot" step="0.01" min="0" placeholder="Contoh: 0.75" required />
                         </div>
+
+                        <div class="mb-4">
+                            <x-jet-label for="tipe" value="{{ __('Tipe Kriteria') }}" />
+                            <select id="tipe" name="tipe" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <option value="benefit" {{ $attribute->tipe == 'benefit' ? 'selected' : '' }}>Benefit</option>
+                                <option value="cost" {{ $attribute->tipe == 'cost' ? 'selected' : '' }}>Cost</option>
+                            </select>
+                        </div>
+
                         <x-jet-validation-errors class="mb-4" />
+
                         <div class="flex flex-wrap justify-between">
                             <a href="{{ route('attribute.index') }}"
                                 class="btn bg-slate-500 hover:bg-slate-600 text-white">
@@ -36,6 +48,7 @@
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
