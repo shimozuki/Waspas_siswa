@@ -32,10 +32,10 @@
                             Jenis Kelamin
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Hasil Qi
+                            Jurusan
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Keterangan
+                            Hasil Qi
                         </th>
                     </tr>
                 </thead>
@@ -59,7 +59,7 @@
                             {{ $row->jurusan->nama }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $row->mahasiswa->hasilQi->where('jurusan_id', $jurusan->id)->first()?->qi }}
+                            {{ number_format($row->qi, 4) }}
                         </td>
                     </tr>
                     @endforeach

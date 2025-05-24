@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hasil;
-use App\Models\HasilQi;
 use App\Models\Jurusan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -14,10 +13,10 @@ class HasilController extends Controller
     function index()
     {
         $jurusans = Jurusan::query()->orderBy('priority', 'asc')->get();
-        foreach($jurusans as $jurusan){
+        foreach ($jurusans as $jurusan) {
             $data[$jurusan->id] = Hasil::query()->where('jurusan_id', $jurusan->id)->paginate(10);
         }
-        return view('pages.hasil.index', compact('jurusans', 'data'));    
+        return view('pages.hasil.index', compact('jurusans', 'data'));
     }
 
     function export(Request $request)
