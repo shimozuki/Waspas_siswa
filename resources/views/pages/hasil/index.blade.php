@@ -2,18 +2,45 @@
     @foreach ($jurusans as $jurusan)
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         @auth
-        <div class="sm:flex sm:justify-between sm:items-center mb-8">
-            <a href="{{ route('hasil.export') }}?jurusan={{ $jurusan->id }}"
-                class="btn bg-red-500 hover:bg-red-600 text-white">
-                <i class="fa-solid fa-file-pdf"></i>
-                <span class="hidden xs:block ml-2">Export PDF</span>
-            </a>
+        <div class="flex justify-between items-center mb-8">
+            <!-- Kiri: Button -->
+            <div class="flex items-center gap-x-3">
+                <a href="{{ route('hasil.export') }}?jurusan={{ $jurusan->id }}"
+                    class="btn bg-red-500 hover:bg-red-600 text-white {{ $status[$jurusan->id] == 0 ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span class="hidden xs:block ml-2">Export PDF</span>
+                </a>
+                @if (auth()->user()->id == '2' && $status[$jurusan->id] == 0)
+                <form action="{{ route('hasil.approve', $jurusan->id) }}" method="POST" onsubmit="return confirm('Yakin setujui hasil?')" class="m-0">
+                    @csrf
+                    <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
+                    <button type="submit" class="btn bg-slate-500 hover:bg-slate-600 text-white">Setujui Hasil</button>
+                </form>
+                @endif
+            </div>
+
+            <!-- Kanan: Filter Tahun Ajaran -->
+            <form method="GET" action="{{ url()->current() }}" class="m-0">
+                <div class="flex items-center gap-2">
+                    <label for="tahun_ajaran" class="font-medium">Tahun Ajaran:</label>
+                    <select id="tahun_ajaran" name="tahun_ajaran" onchange="this.form.submit()" class="border rounded px-2 py-1">
+                        @foreach ($tahunAjarans as $ta)
+                        <option value="{{ $ta }}" {{ $tahun_ajaran == $ta ? 'selected' : '' }}>
+                            {{ $ta }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
         </div>
         @endauth
         <div class="relative overflow-x-auto">
             @auth
             <div class="bg-white rounded-t-lg p-4">
                 <h5 class="mr-3 font-semibold dark:text-white">Hasil Perankingan</h5>
+                @if ($status[$jurusan->id] == 1)
+                <span class="text-green-600 font-semibold">Sudah disetujui</span>
+                @endif
             </div>
             @endauth
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

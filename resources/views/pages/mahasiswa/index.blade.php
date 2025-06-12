@@ -44,6 +44,9 @@
                                     <div class="font-semibold text-left">Asal Kelas</div>
                                 </th>
                                 <th class="p-2">
+                                    <div class="font-semibold text-left">Tahun Ajaran</div>
+                                </th>
+                                <th class="p-2">
                                     <div class="font-semibold text-left">Aksi</div>
                                 </th>
                             </tr>
@@ -78,6 +81,10 @@
                     {
                         data: 'asal_kelas',
                         name: 'asal_kelas'
+                    },
+                    {
+                        data: 'tahun_ajaran',
+                        name: 'tahun_ajaran'
                     },
                     {
                         data: 'edit',

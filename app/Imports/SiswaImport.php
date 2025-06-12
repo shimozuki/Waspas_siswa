@@ -25,6 +25,7 @@ class SiswaImport implements ToCollection, WithHeadingRow
                         'nama' => $row['nama'],
                         'jenis_kelamin' => $row['jenis_kelamin'],
                         'asal_kelas' => $row['jurusan'],
+                        'tahun_ajaran' => $row['tahun_ajaran'],
                     ]);
 
                     foreach ($attributes as $attribute) {

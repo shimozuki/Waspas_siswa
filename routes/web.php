@@ -82,10 +82,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function
     Route::get('hasil/export', [HasilController::class, 'export'])->name('hasil.export');
 
     /* Route for Perhitungan SMART */
-    Route::get('perhitungan',[PerhitunganController::class, 'index'])->name('perhitungan.index');
+    Route::get('perhitungan', [PerhitunganController::class, 'index'])->name('perhitungan.index');
     Route::post('perhitungan/save', [PerhitunganController::class, 'save'])->name('perhitungan.save');
 
-    Route::fallback(function() {
+    Route::post('/hasil/{jurusan}/approve', [HasilController::class, 'approve'])->name('hasil.approve');
+
+
+    Route::fallback(function () {
         return view('pages/utility/404');
-    });    
+    });
 });
