@@ -53,6 +53,7 @@ class MahasiswaController extends Controller
     function destroy(Request $request): void
     {
         $mahasiswa = Mahasiswa::findOrFail($request->id);
+        NilaiSiswa::where('mahasiswa_id', $mahasiswa->id)->delete();
         $mahasiswa->delete();
     }
 }
