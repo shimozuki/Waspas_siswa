@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Imports\MahasiswaImport;
 use App\Imports\SiswaImport;
 use App\Models\Attribute;
-use App\Models\Finansial;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -54,12 +53,6 @@ class MahasiswaController extends Controller
     function destroy(Request $request): void
     {
         $mahasiswa = Mahasiswa::findOrFail($request->id);
-
-        $financials = Finansial::query()->where('mahasiswa_id', $mahasiswa->id)->get();
-        foreach ($financials as $financial) {
-            $financial->delete();
-        }
-
         $mahasiswa->delete();
     }
 }
