@@ -29,13 +29,13 @@ class MahasiswaController extends Controller
 
     function create()
     {
-        return view('pages.mahasiswa.create');    
+        return view('pages.mahasiswa.create');
     }
 
     function save(Request $request)
     {
         $kriteria = Attribute::query()->get();
-        if(count($kriteria) == 0){
+        if (count($kriteria) == 0) {
             return redirect()->refresh()->with('error', 'Data Kriteria belum ada!');
         }
         $validated = $request->validate([
@@ -51,13 +51,15 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.show', compact('mahasiswa'));
     }
 
-    function destroy(Request $request):void
+    function destroy(Request $request): void
     {
         $mahasiswa = Mahasiswa::findOrFail($request->id);
-        // $financials = Finansial::query()->where('mahasiswa_id', $mahasiswa->id)->get();
-        // foreach($financials as $financial){
-        //     $financial->delete();
-        // }
-        // $mahasiswa->delete();
+
+        $financials = Finansial::query()->where('mahasiswa_id', $mahasiswa->id)->get();
+        foreach ($financials as $financial) {
+            $financial->delete();
+        }
+
+        $mahasiswa->delete();
     }
 }
