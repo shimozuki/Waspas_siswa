@@ -6,6 +6,7 @@ use App\Imports\MahasiswaImport;
 use App\Imports\SiswaImport;
 use App\Models\Attribute;
 use App\Models\Mahasiswa;
+use App\Models\NilaiSiswa;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
