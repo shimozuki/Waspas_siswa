@@ -9,6 +9,9 @@
                     </header>
                     <form method="GET" action="{{ route('perhitungan.index') }}">
                         <select name="tahun_ajaran" onchange="this.form.submit()">
+                            @if(request('tahun_ajaran') == null)
+                            <option value="" selected disabled>-- pilih tahun --</option>
+                            @endif
                             @foreach($tahunAjarans as $tahun)
                             <option value="{{ $tahun }}" {{ request('tahun_ajaran') == $tahun ? 'selected' : '' }}>
                                 {{ $tahun }}
