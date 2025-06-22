@@ -11,30 +11,30 @@ use App\Models\SubAttribute;
 
 class CalculationRepository
 {
-    public static function calculate()
+    public static function calculate($tahun_ajaran)
     {
-        $siswas = Mahasiswa::query()->get();
+        $siswas = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->get();
         foreach ($siswas as $siswa) {
-            CalculationRepository::hitungMatriks($siswa);
+            self::hitungMatriks($siswa, $tahun_ajaran);
         }
     }
 
-    public static function hitungMatriks(Mahasiswa $siswa)
+    public static function hitungMatriks(Mahasiswa $siswa, $tahun_ajaran)
     {
-        $jurusans = Jurusan::query()->get();
-        $subKriteria = SubAttribute::query()->get();
-        $attributes = Attribute::query()->get();
+        $jurusans = Jurusan::all();
+        $subKriteria = SubAttribute::all();
+        $attributes = Attribute::all();
         $nilaiJurusan = [];
+
         foreach ($jurusans as $jurusan) {
             $nilai = [];
             foreach ($attributes as $attribute) {
                 $val = 0;
                 $count = count($attribute->subAttribute->where('jurusan_id', $jurusan->id));
                 foreach ($attribute->subAttribute->where('jurusan_id', $jurusan->id) as $sub) {
-                    $val = $val +  $siswa->nilaiSiswa->where('nilai_id', $sub->nilai_id)->first()?->calculateMatriks($sub->nilai);
+                    $val += $siswa->nilaiSiswa->where('nilai_id', $sub->nilai_id)->first()?->calculateMatriks($sub->nilai);
                 }
-                $total = $val / $count;
-                // $nilai[$attribute->id] = $total;
+                $total = $val / max(1, $count); // hindari div 0
                 if ($attribute->tipe === 'cost') {
                     $total = 1 / $total;
                 }
@@ -42,54 +42,58 @@ class CalculationRepository
             }
             $nilaiJurusan[$jurusan->id] = $nilai;
         }
-        CalculationRepository::hitungQi($siswa, $nilaiJurusan);
+
+        self::hitungQi($siswa, $nilaiJurusan, $tahun_ajaran);
     }
 
-    public static function hitungQi(Mahasiswa $siswa, array $matriks)
+
+    public static function hitungQi(Mahasiswa $siswa, array $matriks, $tahun_ajaran)
     {
-        $jurusans = Jurusan::query()->get();
-        $attributes = Attribute::query()->get();
+        $jurusans = Jurusan::all();
+        $attributes = Attribute::all();
+
         foreach ($jurusans as $jurusan) {
             $perkalian = [];
             $pow = [];
+
             foreach ($attributes as $attribute) {
                 $perkalian[] = $matriks[$jurusan->id][$attribute->id] * $attribute->bobot;
                 $pow[] = pow($matriks[$jurusan->id][$attribute->id], $attribute->bobot);
             }
+
             $totalPerkalian = array_sum($perkalian) * 0.5;
-            $totalPow = 0;
-            foreach ($pow as $p) {
-                if ($totalPow != 0) {
-                    $totalPow = $totalPow * $p;
-                } else {
-                    $totalPow = $p;
-                }
-            }
+            $totalPow = array_reduce($pow, fn($carry, $item) => $carry === 0 ? $item : $carry * $item, 0);
             $totalPow = $totalPow * 0.5;
+
             $hasilQi = $totalPerkalian + $totalPow;
-            Hasil::create([
-                'mahasiswa_id' => $siswa->id,
-                'jurusan_id' => $jurusan->id,
-                'qi' => $hasilQi,
-            ]);
+
+            Hasil::updateOrCreate(
+                [
+                    'mahasiswa_id' => $siswa->id,
+                    'jurusan_id' => $jurusan->id,
+                    'tahun_ajaran' => $tahun_ajaran,
+                ],
+                [
+                    'qi' => $hasilQi,
+                ]
+            );
         }
     }
 
-    public static function pengelompokan()
+    public static function pengelompokan($tahun_ajaran)
     {
-        $jurusans = Jurusan::query()->orderBy('priority', 'asc')->get();
+        $jurusans = Jurusan::orderBy('priority', 'asc')->get();
 
         foreach ($jurusans as $jurusan) {
             $hasilQi = Hasil::where('jurusan_id', $jurusan->id)
+                ->where('tahun_ajaran', $tahun_ajaran)
                 ->orderByDesc('qi')
                 ->get();
 
             $rank = 1;
-
             foreach ($hasilQi as $hasil) {
-                $hasil->rank = $rank;
+                $hasil->rank = $rank++;
                 $hasil->save();
-                $rank++;
             }
         }
     }

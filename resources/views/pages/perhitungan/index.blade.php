@@ -7,6 +7,15 @@
                     <header class="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
                         <h2 class="font-semibold text-slate-800 dark:text-slate-100">Normalisasi Kriteria</h2>
                     </header>
+                    <form method="GET" action="{{ route('perhitungan.index') }}">
+                        <select name="tahun_ajaran" onchange="this.form.submit()">
+                            @foreach($tahunAjarans as $tahun)
+                            <option value="{{ $tahun }}" {{ request('tahun_ajaran') == $tahun ? 'selected' : '' }}>
+                                {{ $tahun }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </form>
                 </div>
                 <div class="p-3">
                     <!-- Table -->
@@ -169,16 +178,17 @@
             </div>
         </div>
         @endforeach
+        @if (!$hasHasil)
         <div class="sm:flex sm:justify-between sm:items-center mb-8">
-            @if ($checkHasil < 1)
-                <form action="{{ route('perhitungan.save') }}" method="POST">
+            <form action="{{ route('perhitungan.save') }}" method="POST">
                 @csrf
+                <input type="hidden" name="tahun_ajaran" value="{{ request('tahun_ajaran') }}">
                 <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span class="hidden xs:block ml-2">Simpan Hasil</span>
                 </button>
-                </form>
-                @endif
+            </form>
         </div>
+        @endif
     </div>
 </x-app-layout>

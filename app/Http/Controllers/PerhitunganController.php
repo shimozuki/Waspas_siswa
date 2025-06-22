@@ -16,22 +16,42 @@ class PerhitunganController extends Controller
     function index()
     {
         $checkHasil = Hasil::count();
-        $data['attributes'] = Attribute::query()->get();
-        $data['sub'] = SubAttribute::query()->get();
-        $data['mahasiswas'] = Mahasiswa::paginate(10);
-        $data['jurusan'] = Jurusan::query()->get();
-        return view('pages.perhitungan.index', compact('data', 'checkHasil'));
+        $data['attributes'] = Attribute::all();
+        $data['sub'] = SubAttribute::all();
+        $data['jurusan'] = Jurusan::all();
+
+        $tahunAjarans = Mahasiswa::select('tahun_ajaran')->distinct()->pluck('tahun_ajaran');
+        $tahun_ajaran = request('tahun_ajaran', now()->year);
+        $hasHasil = Hasil::where('tahun_ajaran', $tahun_ajaran)->exists();
+
+        $data['tahunAjarans'] = $tahunAjarans;
+        $data['mahasiswas'] = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->paginate(10);
+
+        return view('pages.perhitungan.index', compact('data', 'checkHasil', 'tahun_ajaran', 'tahunAjarans', 'hasHasil'));
     }
 
-    function save()
+
+    function save(Request $request)
     {
+        $tahun_ajaran = $request->input('tahun_ajaran');
+        if (!$tahun_ajaran) {
+            return redirect()->back()->with('error', 'Tahun ajaran belum dipilih!');
+        }
+
         $jurusan = Jurusan::count();
-        if($jurusan == 0){
+        if ($jurusan == 0) {
             return redirect()->back()->with('error', 'Harap isi Jurusan!');
         }
-        $mahasiswas = Mahasiswa::query()->get();
-        CalculationRepository::calculate();
-        CalculationRepository::pengelompokan();
-        return redirect()->route('hasil.index')->with('success', 'Hasil perangkingan disimpan!');
+
+        $mahasiswas = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->get();
+        if ($mahasiswas->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada mahasiswa untuk tahun ajaran ini!');
+        }
+
+        CalculationRepository::calculate($tahun_ajaran);
+        CalculationRepository::pengelompokan($tahun_ajaran);
+
+        return redirect()->route('hasil.index', ['tahun_ajaran' => $tahun_ajaran])
+            ->with('success', 'Hasil perangkingan disimpan!');
     }
 }
