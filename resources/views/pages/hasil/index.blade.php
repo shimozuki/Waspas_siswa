@@ -86,7 +86,7 @@
                             {{ $row->jurusan->nama }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ number_format($row->qi, 4) }}
+                            {{ number_format($row->qi, 2) }}
                         </td>
                     </tr>
                     @endforeach

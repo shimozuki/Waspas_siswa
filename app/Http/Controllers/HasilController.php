@@ -22,14 +22,15 @@ class HasilController extends Controller
         $data = [];
         $status = []; // <-- TAMBAHKAN INI
         foreach ($jurusans as $jurusan) {
-            // Data hasil per jurusan, difilter tahun ajaran
+            // Data hasil per jurusan, difilter tahun ajaran dan diurutkan berdasarkan Qi tertinggi
             $data[$jurusan->id] = Hasil::where('jurusan_id', $jurusan->id)
                 ->whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
                     $query->where('tahun_ajaran', $tahun_ajaran);
                 })
+                ->orderBy('qi', 'desc') // ⬅️ Tambahkan ini untuk urut ranking
                 ->paginate(10);
 
-            // Ambil status, dari row pertama (asumsi status konsisten satu jurusan & tahun ajaran)
+            // Ambil status dari hasil pertama
             $status[$jurusan->id] = Hasil::where('jurusan_id', $jurusan->id)
                 ->whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
                     $query->where('tahun_ajaran', $tahun_ajaran);

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class PerhitunganController extends Controller
 {
-    function index()
+    public function index()
     {
         $checkHasil = Hasil::count();
         $data['attributes'] = Attribute::all();
@@ -27,8 +27,22 @@ class PerhitunganController extends Controller
         $data['tahunAjarans'] = $tahunAjarans;
         $data['mahasiswas'] = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->paginate(10);
 
-        return view('pages.perhitungan.index', compact('data', 'checkHasil', 'tahun_ajaran', 'tahunAjarans', 'hasHasil'));
+        // 🔧 Tambahkan baris ini agar session normalisasi diisi
+        \App\Repository\CalculationRepository::calculate($tahun_ajaran);
+
+        // 🔧 Ambil session hasil normalisasi
+        $normalisasi = session('normalisasi_matriks', []);
+
+        return view('pages.perhitungan.index', compact(
+            'data',
+            'checkHasil',
+            'tahun_ajaran',
+            'tahunAjarans',
+            'hasHasil',
+            'normalisasi'
+        ));
     }
+
 
 
     function save(Request $request)

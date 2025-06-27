@@ -167,7 +167,10 @@
                                     @foreach ($data['sub']->where('jurusan_id', $jurusan->id) as $subKriteria)
                                     <td class="p-2">
                                         <div class="text-center">
-                                            {{ $mahasiswa->nilaiSiswa->where('nilai_id', $subKriteria->nilai_id)->first()?->calculateMatriks($subKriteria->nilai) }}
+                                            @php
+                                            $nilaiNorm = $normalisasi[$mahasiswa->id][$jurusan->id][$subKriteria->attribute_id] ?? 0;
+                                            @endphp
+                                            {{ number_format($nilaiNorm, 2) }}
                                         </div>
                                     </td>
                                     @endforeach
