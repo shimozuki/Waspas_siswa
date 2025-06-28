@@ -70,17 +70,17 @@ class WaspasRepository
     }
 
     public static function saveResult($qi, Mahasiswa $siswa)
-
     {
         try {
-            Hasil::create([
-                'qi' => $qi,
-                'mahasiswa_id' => $siswa->id,
-            ]);
+            Hasil::updateOrCreate(
+                ['mahasiswa_id' => $siswa->id],
+                ['qi' => $qi]
+            );
         } catch (\Exception $e) {
             throw ValidationException::withMessages([$e->getMessage()]);
         }
     }
+
 
     public static function getJurusanById(Mahasiswa $mahasiswa): string
     {

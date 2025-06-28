@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nilai;
+use App\Models\Attribute;
 use Exception;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,17 +26,23 @@ class NilaiController extends Controller
 
     public function create()
     {
+        $attributes = Attribute::all();
+        return view('pages.nilai.create', compact('attributes'));
         return view('pages.nilai.create');
     }
 
     public function save(Request $request)
     {
         $validated = $request->validate([
+            'attribute_id' => ['required', 'exists:attributes,id'],
             'nama' => ['required', 'string', 'max:255']
         ]);
+
         Nilai::create($validated);
+
         return redirect()->route('nilai.index')->with('success', 'Nilai berhasil ditambahkan!');
     }
+
 
     public function destroy(Request $request)
     {

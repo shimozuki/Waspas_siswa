@@ -29,7 +29,6 @@ class SubAttributeController extends Controller
     public function save(Request $request)
     {
         $validated = $request->validate([
-            'jurusan_id' => ['required'],
             'attribute_id' => ['required'],
             'nilai_id' => ['required'],
             'nilai_max' => ['required', 'numeric'],

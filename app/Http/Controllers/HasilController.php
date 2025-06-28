@@ -13,34 +13,21 @@ class HasilController extends Controller
 {
     public function index()
     {
-        $jurusans = Jurusan::orderBy('priority', 'asc')->get();
-
         $tahunAjarans = Mahasiswa::select('tahun_ajaran')->distinct()->orderBy('tahun_ajaran', 'desc')->pluck('tahun_ajaran');
-
         $tahun_ajaran = request('tahun_ajaran', $tahunAjarans->first());
 
-        $data = [];
-        $status = []; // <-- TAMBAHKAN INI
-        foreach ($jurusans as $jurusan) {
-            // Data hasil per jurusan, difilter tahun ajaran dan diurutkan berdasarkan Qi tertinggi
-            $data[$jurusan->id] = Hasil::where('jurusan_id', $jurusan->id)
-                ->whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
-                    $query->where('tahun_ajaran', $tahun_ajaran);
-                })
-                ->orderBy('qi', 'desc') // ⬅️ Tambahkan ini untuk urut ranking
-                ->paginate(10);
+        $data = Hasil::with('mahasiswa')
+            ->whereHas('mahasiswa', fn($q) => $q->where('tahun_ajaran', $tahun_ajaran))
+            ->orderByDesc('qi')
+            ->paginate(10);
 
-            // Ambil status dari hasil pertama
-            $status[$jurusan->id] = Hasil::where('jurusan_id', $jurusan->id)
-                ->whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
-                    $query->where('tahun_ajaran', $tahun_ajaran);
-                })
-                ->first()?->status ?? 0;
-        }
+        $status = Hasil::whereHas('mahasiswa', fn($q) => $q->where('tahun_ajaran', $tahun_ajaran))
+            ->first()?->status ?? 0;
 
-        // KIRIM STATUS KE VIEW JUGA
-        return view('pages.hasil.index', compact('jurusans', 'data', 'tahunAjarans', 'tahun_ajaran', 'status'));
+        return view('pages.hasil.index', compact('data', 'tahunAjarans', 'tahun_ajaran', 'status'));
     }
+
+
 
     public function approve($jurusan_id)
     {

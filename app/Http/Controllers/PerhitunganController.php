@@ -17,21 +17,22 @@ class PerhitunganController extends Controller
     {
         $checkHasil = Hasil::count();
         $data['attributes'] = Attribute::all();
-        $data['sub'] = SubAttribute::all();
-        $data['jurusan'] = Jurusan::all();
+        $data['sub'] = SubAttribute::all(); // tetap diambil, tapi tidak filter jurusan
+        // $data['jurusan'] = Jurusan::all(); // HAPUS bagian ini karena sudah tidak dipakai
 
         $tahunAjarans = Mahasiswa::select('tahun_ajaran')->distinct()->pluck('tahun_ajaran');
-        $tahun_ajaran = request('tahun_ajaran', now()->year);
+        $tahun_ajaran = request('tahun_ajaran', null);
         $hasHasil = Hasil::where('tahun_ajaran', $tahun_ajaran)->exists();
 
         $data['tahunAjarans'] = $tahunAjarans;
         $data['mahasiswas'] = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->paginate(10);
 
-        // 🔧 Tambahkan baris ini agar session normalisasi diisi
+        // 🔧 Jalankan perhitungan normalisasi + Qi
         \App\Repository\CalculationRepository::calculate($tahun_ajaran);
 
-        // 🔧 Ambil session hasil normalisasi
+        // 🔧 Ambil hasil normalisasi dari session
         $normalisasi = session('normalisasi_matriks', []);
+        $qiValues = session('qi_values', []);
 
         return view('pages.perhitungan.index', compact(
             'data',
@@ -39,33 +40,29 @@ class PerhitunganController extends Controller
             'tahun_ajaran',
             'tahunAjarans',
             'hasHasil',
-            'normalisasi'
+            'normalisasi',
+            'qiValues'
         ));
     }
 
-
-
-    function save(Request $request)
+    public function save(Request $request)
     {
         $tahun_ajaran = $request->input('tahun_ajaran');
-        if (!$tahun_ajaran) {
-            return redirect()->back()->with('error', 'Tahun ajaran belum dipilih!');
+
+        $qiValues = session('qi_values', []);
+        if (empty($qiValues)) {
+            return back()->with('error', 'Belum ada perhitungan Qi!');
         }
 
-        $jurusan = Jurusan::count();
-        if ($jurusan == 0) {
-            return redirect()->back()->with('error', 'Harap isi Jurusan!');
+        foreach ($qiValues as $mahasiswa_id => $qi) {
+            Hasil::updateOrCreate(
+                ['mahasiswa_id' => $mahasiswa_id, 'tahun_ajaran' => $tahun_ajaran],
+                ['qi' => $qi, 'rank' => 0]
+            );
         }
-
-        $mahasiswas = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->get();
-        if ($mahasiswas->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada mahasiswa untuk tahun ajaran ini!');
-        }
-
-        CalculationRepository::calculate($tahun_ajaran);
-        CalculationRepository::pengelompokan($tahun_ajaran);
+        CalculationRepository::generateRanking($tahun_ajaran);
 
         return redirect()->route('hasil.index', ['tahun_ajaran' => $tahun_ajaran])
-            ->with('success', 'Hasil perangkingan disimpan!');
+            ->with('success', 'Hasil Qi berhasil disimpan ke database.');
     }
 }

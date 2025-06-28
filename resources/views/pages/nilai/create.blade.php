@@ -9,6 +9,19 @@
                 <div class="p-3">
                     <form action="{{ route('nilai.save') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        {{-- Dropdown untuk atribut --}}
+                        <div class="mb-4">
+                            <x-jet-label for="attribute_id" value="Pilih Atribut" />
+                            <select name="attribute_id" id="attribute_id" class="form-select w-full mt-1" required>
+                                <option value="">-- Pilih Atribut --</option>
+                                @foreach ($attributes as $attribute)
+                                <option value="{{ $attribute->id }}" {{ old('attribute_id') == $attribute->id ? 'selected' : '' }}>
+                                    {{ $attribute->nama }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        {{-- Input untuk nama nilai --}}
                         <div class="mb-4">
                             <x-jet-label for="nama" value="{{ __('Nilai') }}" />
                             <x-jet-input id="nama" type="text" name="nama" :value="old('nama')" required

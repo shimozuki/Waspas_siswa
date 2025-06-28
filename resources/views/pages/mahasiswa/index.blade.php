@@ -8,7 +8,7 @@
                     <span class="hidden xs:block ml-2">Tambah Siswa</span>
                 </a>
 
-                <a href="{{ asset('template/import_siswa_valid.xlsx') }}"
+                <a href="{{ asset('template/template_import_siswa_valid.xlsx') }}"
                     download
                     class="btn bg-emerald-500 hover:bg-emerald-600 text-white">
                     <i class="fa-solid fa-file-excel"></i>
@@ -41,7 +41,10 @@
                                     <div class="font-semibold text-left">Jenis Kelamin</div>
                                 </th>
                                 <th class="p-2">
-                                    <div class="font-semibold text-left">Asal Kelas</div>
+                                    <div class="font-semibold text-left">Kelas</div>
+                                </th>
+                                <th class="p-2">
+                                    <div class="font-semibold text-left">Jurusan</div>
                                 </th>
                                 <th class="p-2">
                                     <div class="font-semibold text-left">Tahun Ajaran</div>
@@ -81,6 +84,10 @@
                     {
                         data: 'asal_kelas',
                         name: 'asal_kelas'
+                    },
+                    {
+                        data: 'jurusan',
+                        name: 'jurusan'
                     },
                     {
                         data: 'tahun_ajaran',

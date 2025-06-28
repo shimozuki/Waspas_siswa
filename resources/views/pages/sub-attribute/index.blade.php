@@ -22,7 +22,7 @@
                             class="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm">
                             <tr>
                                 <th class="p-2">
-                                    <div class="font-semibold text-left">Jurusan</div>
+                                    <div class="font-semibold text-left">No</div>
                                 </th>
                                 <th class="p-2">
                                     <div class="font-semibold text-left">Kriteria</div>
@@ -46,7 +46,7 @@
                             @foreach ($data as $row)
                             <tr>
                                 <td class="p-2">
-                                    <div class="font-semibold text-left">{{ $row->jurusan->nama }}</div>
+                                    <div class="font-semibold text-left">{{ $loop->iteration }}</div>
                                 </td>
                                 <td class="p-2">
                                     <div class="font-semibold text-left">{{ $row->attribute->nama }}</div>
@@ -65,8 +65,8 @@
                                         class="btn bg-red-600 hover:bg-red-700 text-white">
                                         <i class="fa-solid fa-trash"></i></button>
                                 </td>
-                                @endforeach
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

@@ -10,16 +10,6 @@
                     <form action="{{ route('sub-attribute.save') }}" method="POST">
                         @csrf
                         <div class="mb-4">
-                            <x-jet-label for="jurusan" value="{{ __('Jurusan') }}" />
-                            <select id="jurusan" name="jurusan_id"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option selected>Pilih Jurusan</option>
-                                @foreach ($jurusan as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-4">
                             <x-jet-label for="kriteria" value="{{ __('Kriteria') }}" />
                             <select id="kriteria" name="attribute_id"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">

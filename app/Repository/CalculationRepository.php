@@ -14,151 +14,192 @@ class CalculationRepository
     public static function calculate($tahun_ajaran)
     {
         $mahasiswas = Mahasiswa::with('nilaiSiswa')->where('tahun_ajaran', $tahun_ajaran)->get();
-        $normalisasi = [];
+        $attributes = Attribute::all();
+
+        $maxAll = self::getMaxPerAttribute($tahun_ajaran);
+        $minAll = self::getMinPerAttribute($tahun_ajaran);
+
+        $qiValues = [];
 
         foreach ($mahasiswas as $siswa) {
-            self::hitungMatriks($siswa, $tahun_ajaran);
+            $nilai = [];
 
-            // 🔧 Simpan hasil jika hitungMatriks menyimpan nilai ke session
-            $normalisasi[$siswa->id] = session("normalisasi_matriks.{$siswa->id}", []);
+            foreach ($attributes as $attribute) {
+                $sub = $attribute->subAttribute->first();
+                $nilaiMentah = $siswa->nilaiSiswa->where('nilai_id', $sub?->nilai_id)->first()?->poin ?? 0;
+
+                if ($attribute->tipe === 'cost') {
+                    $min = $minAll[$attribute->id] ?? 1;
+                    $nilai[$attribute->id] = $nilaiMentah > 0 ? $min / $nilaiMentah : 0;
+                } else {
+                    $max = $maxAll[$attribute->id] ?? 1;
+                    $nilai[$attribute->id] = $max > 0 ? $nilaiMentah / $max : 0;
+                }
+            }
+
+            session()->put("normalisasi_matriks.{$siswa->id}", $nilai);
+
+            // 🔴 Hitung nilai Qi
+            $nilaiQi = self::hitungQiSementara($siswa, $nilai);
+            $qiValues[$siswa->id] = round($nilaiQi, 4);
         }
 
-        session(['normalisasi_matriks' => $normalisasi]);
+        session()->put('qi_values', $qiValues); // ⬅️ SIMPAN hasil QI untuk blade
     }
 
 
     public static function hitungMatriks(Mahasiswa $siswa, $tahun_ajaran)
     {
-        $jurusans = Jurusan::all();
         $attributes = Attribute::all();
-        $nilaiJurusan = [];
+        $nilai = [];
 
-        // Ambil nilai maksimum dari semua siswa per jurusan & atribut
         $maxAll = self::getMaxPerAttribute($tahun_ajaran);
+        $minAll = self::getMinPerAttribute($tahun_ajaran);
 
-        foreach ($jurusans as $jurusan) {
-            $nilai = [];
+        foreach ($attributes as $attribute) {
+            // ✅ Ambil semua poin sub-kriteria dan jumlahkan
+            $nilaiMentah = $siswa->nilaiSiswa
+                ->whereIn('nilai_id', $attribute->subAttribute->pluck('nilai_id'))
+                ->sum('poin');
 
-            foreach ($attributes as $attribute) {
-                $nilaiMentah = [];
+            $normalized = 0;
 
-                // Loop semua sub-atribut dari jurusan dan attribute ini
-                foreach ($attribute->subAttribute->where('jurusan_id', $jurusan->id) as $sub) {
-                    $nilaiModel = $siswa->nilaiSiswa->where('nilai_id', $sub->nilai_id)->first();
-                    if ($nilaiModel) {
-                        $nilaiMentah[] = $nilaiModel->poin;
-                    }
-                    \Log::info("Total untuk atribut {$attribute->nama} = " . array_sum($nilaiMentah) . " dari " . count($nilaiMentah));
-                }
-
-                // Rata-rata nilai mentah siswa untuk attribute ini
-                $total = count($nilaiMentah) > 0 ? array_sum($nilaiMentah) / count($nilaiMentah) : 0;
-
-                // Ambil nilai max untuk jurusan & attribute ini
-                $maxValue = $maxAll[$jurusan->id][$attribute->id] ?? 1;
-
-                // Hindari pembagian nol
-                $normalized = $maxValue > 0 ? $total / $maxValue : 0;
-
-                // Jika cost, maka invers
-                if ($attribute->tipe === 'cost') {
-                    $normalized = $normalized > 0 ? 1 / $normalized : 0;
-                }
-
-                // Simpan nilai normalisasi
-                $nilai[$attribute->id] = $normalized;
+            if ($attribute->tipe === 'cost') {
+                $minValue = $minAll[$attribute->id] ?? 1;
+                $normalized = $nilaiMentah > 0 ? $minValue / $nilaiMentah : 0;
+            } else {
+                $maxValue = $maxAll[$attribute->id] ?? 1;
+                $normalized = $maxValue > 0 ? $nilaiMentah / $maxValue : 0;
             }
 
-            // Simpan per jurusan
-            $nilaiJurusan[$jurusan->id] = $nilai;
+            $nilai[$attribute->id] = round($normalized, 4); // bulatkan 4 digit
         }
 
-        session()->put("normalisasi_matriks.{$siswa->id}", $nilaiJurusan);
-        // Lanjutkan ke hitung Qi
-        self::hitungQi($siswa, $nilaiJurusan, $tahun_ajaran);
+        session()->put("normalisasi_matriks.{$siswa->id}", $nilai);
+        self::hitungQi($siswa, $nilai, $tahun_ajaran);
     }
+
     private static function getMaxPerAttribute($tahun_ajaran)
     {
         $max = [];
         $attributes = Attribute::all();
-        $jurusans = Jurusan::all();
-        $siswas = Mahasiswa::where('tahun_ajaran', $tahun_ajaran)->get();
+        $siswas = Mahasiswa::with('nilaiSiswa')->where('tahun_ajaran', $tahun_ajaran)->get();
 
-        foreach ($jurusans as $jurusan) {
-            foreach ($attributes as $attribute) {
-                $nilaiSemua = [];
+        foreach ($attributes as $attribute) {
+            $nilaiSemua = [];
 
-                foreach ($siswas as $siswa) {
-                    $nilaiMentah = [];
+            foreach ($siswas as $siswa) {
+                $nilaiMentah = $siswa->nilaiSiswa
+                    ->whereIn('nilai_id', $attribute->subAttribute->pluck('nilai_id'))
+                    ->sum('poin');
 
-                    foreach ($attribute->subAttribute->where('jurusan_id', $jurusan->id) as $sub) {
-                        $nilaiModel = $siswa->nilaiSiswa->where('nilai_id', $sub->nilai_id)->first();
-                        if ($nilaiModel) {
-                            $nilaiMentah[] = $nilaiModel->poin;
-                        }
-                    }
-
-                    if (count($nilaiMentah) > 0) {
-                        $total = array_sum($nilaiMentah) / count($nilaiMentah);
-                        $nilaiSemua[] = $total;
-                    }
+                if ($nilaiMentah > 0) {
+                    $nilaiSemua[] = $nilaiMentah;
                 }
-
-                $max[$jurusan->id][$attribute->id] = count($nilaiSemua) > 0 ? max($nilaiSemua) : 1;
             }
+
+
+            $max[$attribute->id] = count($nilaiSemua) > 0 ? max($nilaiSemua) : 1;
         }
 
         return $max;
     }
 
-    public static function hitungQi(Mahasiswa $siswa, array $matriks, $tahun_ajaran)
+
+    private static function getMinPerAttribute($tahun_ajaran)
     {
-        $jurusans = Jurusan::all();
+        $min = [];
         $attributes = Attribute::all();
+        $siswas = Mahasiswa::with('nilaiSiswa')->where('tahun_ajaran', $tahun_ajaran)->get();
 
-        foreach ($jurusans as $jurusan) {
-            $perkalian = [];
-            $pow = [];
+        foreach ($attributes as $attribute) {
+            $nilaiSemua = [];
 
-            foreach ($attributes as $attribute) {
-                $perkalian[] = $matriks[$jurusan->id][$attribute->id] * $attribute->bobot;
-                $pow[] = pow($matriks[$jurusan->id][$attribute->id], $attribute->bobot);
+            foreach ($siswas as $siswa) {
+                $nilaiMentah = $siswa->nilaiSiswa
+                    ->whereIn('nilai_id', $attribute->subAttribute->pluck('nilai_id'))
+                    ->sum('poin');
+
+                if ($nilaiMentah > 0) {
+                    $nilaiSemua[] = $nilaiMentah;
+                }
             }
 
-            $totalPerkalian = array_sum($perkalian) * 0.5;
-            $totalPow = array_reduce($pow, fn($carry, $item) => $carry === 0 ? $item : $carry * $item, 0);
-            $totalPow = $totalPow * 0.5;
+            $min[$attribute->id] = count($nilaiSemua) > 0 ? min($nilaiSemua) : 1;
+        }
 
-            $hasilQi = $totalPerkalian + $totalPow;
+        return $min;
+    }
 
-            Hasil::updateOrCreate(
-                [
-                    'mahasiswa_id' => $siswa->id,
-                    'jurusan_id' => $jurusan->id,
-                    'tahun_ajaran' => $tahun_ajaran,
-                ],
-                [
-                    'qi' => $hasilQi,
-                ]
-            );
+    public static function hitungQiSementara(Mahasiswa $siswa, array $matriks)
+    {
+        $attributes = Attribute::all();
+        $perkalian = [];
+        $pangkat = [];
+
+        foreach ($attributes as $attribute) {
+            $normalized = $matriks[$attribute->id] ?? 0;
+            $perkalian[] = $normalized * $attribute->bobot;
+            $pangkat[] = pow($normalized, $attribute->bobot);
+        }
+
+        $totalPerkalian = array_sum($perkalian) * 0.5;
+        $totalPangkat = array_product($pangkat) * 0.5;
+
+        return $totalPerkalian + $totalPangkat;
+    }
+
+    public static function hitungQi(Mahasiswa $siswa, array $matriks, $tahun_ajaran)
+    {
+        $attributes = Attribute::all();
+        $perkalian = [];
+        $pow = [];
+
+        foreach ($attributes as $attribute) {
+            $normalized = $matriks[$attribute->id] ?? 0;
+            $perkalian[] = $normalized * $attribute->bobot;
+            $pow[] = pow($normalized, $attribute->bobot);
+        }
+
+        $totalPerkalian = array_sum($perkalian) * 0.5;
+        $totalPow = array_product($pow) * 0.5;
+        $hasilQi = $totalPerkalian + $totalPow;
+
+        Hasil::updateOrCreate(
+            [
+                'mahasiswa_id' => $siswa->id,
+                'tahun_ajaran' => $tahun_ajaran,
+            ],
+            [
+                'qi' => $hasilQi,
+                'rank' => 0, // <--- tambahkan ini
+            ]
+        );
+    }
+    public static function generateRanking($tahun_ajaran)
+    {
+        // Ambil semua hasil Qi untuk tahun ajaran tertentu, urutkan dari terbesar ke terkecil
+        $hasilSemua = Hasil::whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
+            $query->where('tahun_ajaran', $tahun_ajaran);
+        })->orderByDesc('qi')->get();
+
+        $ranking = 1;
+        foreach ($hasilSemua as $hasil) {
+            $hasil->rank = $ranking++;
+            $hasil->save();
         }
     }
 
     public static function pengelompokan($tahun_ajaran)
     {
-        $jurusans = Jurusan::orderBy('priority', 'asc')->get();
+        $hasilQi = Hasil::where('tahun_ajaran', $tahun_ajaran)
+            ->orderByDesc('qi')
+            ->get();
 
-        foreach ($jurusans as $jurusan) {
-            $hasilQi = Hasil::where('jurusan_id', $jurusan->id)
-                ->where('tahun_ajaran', $tahun_ajaran)
-                ->orderByDesc('qi')
-                ->get();
-
-            $rank = 1;
-            foreach ($hasilQi as $hasil) {
-                $hasil->rank = $rank++;
-                $hasil->save();
-            }
+        $rank = 1;
+        foreach ($hasilQi as $hasil) {
+            $hasil->rank = $rank++;
+            $hasil->save();
         }
     }
 }

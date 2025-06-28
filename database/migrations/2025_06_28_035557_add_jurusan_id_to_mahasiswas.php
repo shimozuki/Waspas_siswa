@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('hasil_qis', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('mahasiswa_id')->constrained();
-            $table->foreignId('jurusan_id')->constrained();
-            $table->float('qi');
-            $table->timestamps();
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->string('jurusan')->nullable(); // ⬅️ hanya kolom teks biasa
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hasil_qis');
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->dropColumn('jurusan');
+        });
     }
 };

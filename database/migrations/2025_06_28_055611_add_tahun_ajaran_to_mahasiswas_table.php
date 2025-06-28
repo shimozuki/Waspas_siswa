@@ -13,15 +13,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('hasil_qis', function (Blueprint $table) {
-            $table->renameColumn('siswa_id', 'mahasiswa_id');
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->string('tahun_ajaran')->nullable()->after('jurusan');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::table('hasil_qis', function (Blueprint $table) {
-            $table->renameColumn('mahasiswa_id', 'siswa_id');
+        Schema::table('mahasiswas', function (Blueprint $table) {
+            $table->dropColumn('tahun_ajaran');
         });
     }
 };

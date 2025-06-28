@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\MahasiswaImport;
 use App\Imports\SiswaImport;
 use App\Models\Attribute;
 use App\Models\Mahasiswa;
