@@ -9,7 +9,7 @@
                     <span class="hidden xs:block ml-2">Export PDF</span>
                 </a>
                 @if (auth()->user()->id == '2' && $status == 0)
-                <form action="{{ route('hasil.approve.global') }}" method="POST" onsubmit="return confirm('Yakin setujui hasil?')" class="m-0">
+                <form action="{{ route('hasil.approve') }}" method="POST" onsubmit="return confirm('Yakin setujui hasil?')" class="m-0">
                     @csrf
                     <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
                     <button type="submit" class="btn bg-slate-500 hover:bg-slate-600 text-white">Setujui Hasil</button>
