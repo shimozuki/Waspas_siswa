@@ -39,11 +39,20 @@ class HasilController extends Controller
     }
 
 
-    function export(Request $request)
+    public function export($tahun_ajaran)
     {
-        $jurusan = Jurusan::findOrFail($request->jurusan);
-        $data = Hasil::query()->where('jurusan_id', $request->jurusan)->orderBy('rank', 'asc')->get();
-        $pdf = Pdf::loadView('pdf.export', ['data' => $data, 'jurusan' => $jurusan]);
-        return $pdf->download('hasilPerankingan-' . $jurusan->nama . '.pdf');
+        $data = Hasil::with('mahasiswa')
+            ->whereHas('mahasiswa', function ($q) use ($tahun_ajaran) {
+                $q->where('tahun_ajaran', $tahun_ajaran);
+            })
+            ->orderBy('rank', 'asc')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.export', [
+            'data' => $data,
+            'tahun_ajaran' => $tahun_ajaran
+        ]);
+
+        return $pdf->download('hasilPerankingan-' . $tahun_ajaran . '.pdf');
     }
 }

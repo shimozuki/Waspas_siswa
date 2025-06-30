@@ -3,11 +3,12 @@
         @auth
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center gap-x-3">
-                <a href="{{ route('hasil.export') }}"
+                <a href="{{ route('hasil.export', ['tahun_ajaran' => $tahun_ajaran]) }}"
                     class="btn bg-red-500 hover:bg-red-600 text-white {{ $status == 0 ? 'opacity-50 pointer-events-none cursor-not-allowed' : '' }}">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span class="hidden xs:block ml-2">Export PDF</span>
                 </a>
+
                 @if (auth()->user()->id == '2' && $status == 0)
                 <form id="approve-form" action="{{ route('hasil.approve', ['tahun_ajaran' => $tahun_ajaran]) }}" method="POST" class="m-0">
                     @csrf
