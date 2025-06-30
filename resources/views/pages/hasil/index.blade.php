@@ -9,10 +9,13 @@
                     <span class="hidden xs:block ml-2">Export PDF</span>
                 </a>
                 @if (auth()->user()->id == '2' && $status == 0)
-                <form action="{{ route('hasil.approve', ['tahun_ajaran' => $tahun_ajaran]) }}" method="POST" onsubmit="return confirm('Yakin setujui hasil?')" class="m-0">
+                <form id="approve-form" action="{{ route('hasil.approve', ['tahun_ajaran' => $tahun_ajaran]) }}" method="POST" class="m-0">
                     @csrf
-                    <button type="submit" class="btn bg-slate-500 hover:bg-slate-600 text-white">Setujui Hasil</button>
                 </form>
+
+                <button type="button" onclick="confirmApprove()" class="btn bg-slate-500 hover:bg-slate-600 text-white">
+                    Setujui Hasil
+                </button>
                 @endif
             </div>
 
@@ -79,4 +82,23 @@
             font-size: 14px;
         }
     </style>
+    <script>
+        function confirmApprove() {
+            Swal.fire({
+                title: 'Setujui hasil?',
+                text: "Data akan dianggap final dan disetujui.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, setujui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('approve-form').submit();
+                }
+            });
+        }
+    </script>
+
 </x-app-layout>
