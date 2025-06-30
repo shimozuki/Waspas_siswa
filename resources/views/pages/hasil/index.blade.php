@@ -13,7 +13,22 @@
                 <form id="approve-form" action="{{ route('hasil.approve', ['tahun_ajaran' => $tahun_ajaran]) }}" method="POST" class="m-0">
                     @csrf
                 </form>
+                @endif
 
+
+                @if (auth()->user()->id == '2' && $status == 0)
+                <form method="GET" action="{{ url()->current() }}" class="m-0">
+                    <div class="flex items-center gap-2">
+                        <label for="tahun_ajaran" class="font-medium">Tahun Ajaran:</label>
+                        <select id="tahun_ajaran" name="tahun_ajaran" onchange="this.form.submit()" class="border rounded px-2 py-1">
+                            @foreach ($tahunAjarans as $ta)
+                            <option value="{{ $ta }}" {{ $tahun_ajaran == $ta ? 'selected' : '' }}>
+                                {{ $ta }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </form>
                 <button type="button" onclick="confirmApprove()" class="btn bg-slate-500 hover:bg-slate-600 text-white">
                     Setujui Hasil
                 </button>

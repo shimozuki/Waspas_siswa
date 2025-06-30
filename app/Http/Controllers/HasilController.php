@@ -41,18 +41,15 @@ class HasilController extends Controller
 
     public function export($tahun_ajaran)
     {
-        $data = Hasil::with('mahasiswa')
+        $data = Hasil::with(['mahasiswa:id,no_reg,nama,jenis_kelamin,asal_kelas'])
             ->whereHas('mahasiswa', function ($q) use ($tahun_ajaran) {
                 $q->where('tahun_ajaran', $tahun_ajaran);
             })
             ->orderBy('rank', 'asc')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.export', [
-            'data' => $data,
-            'tahun_ajaran' => $tahun_ajaran
-        ]);
-
-        return $pdf->download('hasilPerankingan-' . $tahun_ajaran . '.pdf');
+        return Pdf::loadView('pdf.export', compact('data', 'tahun_ajaran'))
+            ->setPaper('a4', 'portrait')
+            ->download('hasilPerankingan-' . $tahun_ajaran . '.pdf');
     }
 }

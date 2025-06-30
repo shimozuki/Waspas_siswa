@@ -79,7 +79,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function
 
     /* Route for Hasil */
     Route::get('hasil', [HasilController::class, 'index'])->name('hasil.index');
-    Route::get('/admin/hasil/export/{tahun_ajaran}', [HasilController::class, 'export'])->name('hasil.export');
+    Route::prefix('admin')->group(function () {
+        Route::get('/hasil/export/{tahun_ajaran}', [HasilController::class, 'export'])->name('hasil.export');
+    });
 
 
     /* Route for Perhitungan SMART */
