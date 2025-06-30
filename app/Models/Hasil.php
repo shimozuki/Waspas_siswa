@@ -12,13 +12,8 @@ class Hasil extends Model
 
     protected $guarded = [];
 
-    function mahasiswa():BelongsTo
+    function mahasiswa(): BelongsTo
     {
         return $this->belongsTo(Mahasiswa::class);
-    }
-
-    public function jurusan():BelongsTo
-    {
-        return $this->belongsTo(Jurusan::class);
     }
 }

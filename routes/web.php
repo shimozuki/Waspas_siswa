@@ -85,7 +85,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function
     Route::get('perhitungan', [PerhitunganController::class, 'index'])->name('perhitungan.index');
     Route::post('perhitungan/save', [PerhitunganController::class, 'save'])->name('perhitungan.save');
 
-    Route::post('/hasil/{jurusan}/approve', [HasilController::class, 'approve'])->name('hasil.approve');
+    Route::post('/hasil/{tahun_ajaran}/approve', [HasilController::class, 'approve'])->name('hasil.approve');
 
 
     Route::fallback(function () {

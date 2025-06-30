@@ -29,15 +29,11 @@ class HasilController extends Controller
 
 
 
-    public function approve($jurusan_id)
+    public function approve($tahun_ajaran)
     {
-        $tahun_ajaran = request('tahun_ajaran');
-
-        $updated = Hasil::where('jurusan_id', $jurusan_id)
-            ->whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
-                $query->where('tahun_ajaran', $tahun_ajaran);
-            })
-            ->update(['status' => 1]);
+        $updated = Hasil::whereHas('mahasiswa', function ($query) use ($tahun_ajaran) {
+            $query->where('tahun_ajaran', $tahun_ajaran);
+        })->update(['status' => 1]);
 
         return redirect()->back()->with('success', 'Hasil berhasil disetujui!');
     }

@@ -46,8 +46,13 @@ class MahasiswaController extends Controller
 
     function show($id)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id);
-        return view('pages.mahasiswa.show', compact('mahasiswa'));
+        $mahasiswa = Mahasiswa::with('nilaiSiswa.attribute')->find($id);
+        $nilaiSiswa = NilaiSiswa::select('attributes.nama as attribute_nama', 'nilai_siswas.poin')
+            ->join('nilais', 'nilai_siswas.nilai_id', '=', 'nilais.id')
+            ->join('attributes', 'nilais.attribute_id', '=', 'attributes.id')
+            ->where('nilai_siswas.mahasiswa_id', $id)
+            ->get();
+        return view('pages.mahasiswa.show', compact('mahasiswa', 'nilaiSiswa'));
     }
 
     function destroy(Request $request): void

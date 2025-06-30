@@ -44,12 +44,12 @@
                 <div class="p-3">
                     <table>
                         <tbody>
-                            @foreach ($mahasiswa->nilaiSiswa as $row)
-                                <tr class="w-full">
-                                    <td class="w-1/4">{{ $row->nilai->nama }}</td>
-                                    <td class="w-1/4 text-right">:</td>
-                                    <td>{{ $row->poin }}</td>
-                                </tr>
+                            @foreach ($nilaiSiswa as $row)
+                            <tr>
+                                <td class="w-1/4">{{ $row->attribute_nama }}</td>
+                                <td class="w-1/4 text-right">:</td>
+                                <td>{{ $row->poin }}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>

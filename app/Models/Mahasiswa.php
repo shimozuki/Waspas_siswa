@@ -24,8 +24,8 @@ class Mahasiswa extends Model
         return $this->hasMany(HasilQi::class);
     }
 
-    public function hasil(): HasOne
+    public function attribute()
     {
-        return $this->hasOne(Hasil::class);
+        return $this->belongsTo(Attribute::class, 'nilai_id');
     }
 }
