@@ -41,6 +41,7 @@ class HasilController extends Controller
 
     public function export($tahun_ajaran)
     {
+
         $data = Hasil::with(['mahasiswa:id,no_reg,nama,jenis_kelamin,asal_kelas'])
             ->whereHas('mahasiswa', function ($q) use ($tahun_ajaran) {
                 $q->where('tahun_ajaran', $tahun_ajaran);

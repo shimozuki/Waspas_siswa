@@ -14,9 +14,13 @@ class SubAttributeController extends Controller
 {
     public function index()
     {
-        $data = SubAttribute::query()->with('jurusan', 'attribute', 'nilai')->paginate(10);
-        return view('pages.sub-attribute.index', compact('data'));
+        $grouped = SubAttribute::with('attribute', 'nilai')
+            ->get()
+            ->groupBy(fn($item) => $item->attribute->nama);
+
+        return view('pages.sub-attribute.index', compact('grouped'));
     }
+
 
     public function create()
     {

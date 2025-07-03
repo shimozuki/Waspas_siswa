@@ -71,7 +71,7 @@
         </table>
     </div>
 
-    <div class="judul">HASIL PERANGKINGAN</div>
+    <div class="judul">HASIL PERANGKINGAN TAHUN AJARAN {{$data[0]->tahun_ajaran}}</div>
 
     <table>
         <thead>
