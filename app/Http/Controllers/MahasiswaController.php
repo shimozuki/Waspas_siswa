@@ -9,6 +9,10 @@ use App\Models\NilaiSiswa;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\HeadingRowImport;
+use Maatwebsite\Excel\Validators\ValidationException;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 
 class MahasiswaController extends Controller
 {
@@ -31,18 +35,38 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.create');
     }
 
-    function save(Request $request)
+    public function save(Request $request)
     {
-        $kriteria = Attribute::query()->get();
-        if (count($kriteria) == 0) {
-            return redirect()->refresh()->with('error', 'Data Kriteria belum ada!');
+        $kriteria = Attribute::all();
+        if ($kriteria->isEmpty()) {
+            return redirect()->back()->with('error', 'Data Kriteria belum ada!');
         }
-        $validated = $request->validate([
-            'excel' => ['required', 'mimes:xlsx,xls,csv']
+
+        $request->validate([
+            'excel' => ['required', 'file', 'mimes:xlsx,xls,csv']
         ]);
-        Excel::import(new SiswaImport, $request->file('excel'));
-        return redirect()->route('mahasiswa.index')->with('success', 'Data Siswa Berhasil diimport!');
+
+        try {
+            $import = new SiswaImport;
+            Excel::import($import, $request->file('excel'));
+
+            $hasil = $import->getHasil();
+
+            $pesan = "";
+
+            if ($hasil['gagal'] > 0) {
+                $pesan .= " ❌ {$hasil['gagal']} gagal. Periksa log untuk detail.";
+                Log::warning("Log Gagal Import:\n" . implode("\n", $hasil['log']));
+                return redirect()->route('mahasiswa.index')->with('error', $pesan);
+            }
+
+            return redirect()->route('mahasiswa.index')->with('success', $pesan);
+        } catch (\Exception $e) {
+            Log::error('❌ Gagal impor Excel: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat impor data.');
+        }
     }
+
 
     function show($id)
     {
