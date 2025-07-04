@@ -36,9 +36,9 @@ class SiswaImport implements ToCollection, WithHeadingRow
                 try {
                     // Validasi data dasar
                     $validator = Validator::make($row->toArray(), [
-                        'nisn' => 'required|numeric|unique:mahasiswas,no_reg',
+                        'nisn' => 'required|numeric',
                         'nama' => 'required|string',
-                        'jenis_kelamin' => 'required|in:L,P',
+                        'jenis_kelamin' => 'required',
                         'asal_kelas' => 'nullable|string',
                         'tahun_ajaran' => 'required|digits:4',
                         'jurusan' => 'nullable|string',
