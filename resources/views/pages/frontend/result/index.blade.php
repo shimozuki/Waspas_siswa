@@ -45,7 +45,6 @@
                                 <th scope="col" class="px-6 py-3">No Reg</th>
                                 <th scope="col" class="px-6 py-3">Nama Siswa</th>
                                 <th scope="col" class="px-6 py-3">Jenis Kelamin</th>
-                                <th scope="col" class="px-6 py-3">Hasil Qi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,7 +54,6 @@
                                 <td class="px-6 py-4">{{ $row->mahasiswa->no_reg ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $row->mahasiswa->nama ?? '-' }}</td>
                                 <td class="px-6 py-4">{{ $row->mahasiswa->jenis_kelamin ?? '-' }}</td>
-                                <td class="px-6 py-4">{{ number_format($row->qi, 2) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
