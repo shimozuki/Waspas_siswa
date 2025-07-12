@@ -30,6 +30,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest');
 Route::get('siswa', [GuestController::class, 'siswa'])->name('guest.siswa.index');
 Route::get('hasil-penjurusan', [GuestController::class, 'result'])->name('guest.result.index');
+Route::get('/get-nilai-by-attribute/{id}', [SubAttributeController::class, 'getNilaiByAttribute']);
 Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function () {
 
     // Route for the getting the data feed

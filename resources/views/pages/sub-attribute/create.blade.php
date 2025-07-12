@@ -62,3 +62,31 @@
             </div>
         </div>
 </x-app-layout>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#kriteria').change(function() {
+            var attributeId = $(this).val();
+            $('#nilai').html('<option selected>Loading...</option>');
+
+            if (attributeId) {
+                $.ajax({
+                    url: '/get-nilai-by-attribute/' + attributeId,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#nilai').empty();
+                        $('#nilai').append('<option selected disabled>Pilih Nilai yg digunakan</option>');
+                        $.each(data, function(key, value) {
+                            $('#nilai').append('<option value="' + value.id + '">' + value.nama + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data nilai.');
+                    }
+                });
+            } else {
+                $('#nilai').html('<option selected disabled>Pilih Nilai yg digunakan</option>');
+            }
+        });
+    });
+</script>

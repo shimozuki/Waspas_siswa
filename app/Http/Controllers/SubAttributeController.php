@@ -43,6 +43,13 @@ class SubAttributeController extends Controller
         return redirect()->route('sub-attribute.index')->with('success', 'Sub Kriteria berhasil ditambahkan!');
     }
 
+    public function getNilaiByAttribute($id)
+    {
+        $data = \App\Models\Nilai::where('attribute_id', $id)->get();
+        return response()->json($data);
+    }
+
+
     public function destroy(Request $request)
     {
         $subAttribute = SubAttribute::findOrFail($request->id);

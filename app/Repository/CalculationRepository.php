@@ -25,8 +25,11 @@ class CalculationRepository
             $nilai = [];
 
             foreach ($attributes as $attribute) {
-                $sub = $attribute->subAttribute->first();
-                $nilaiMentah = $siswa->nilaiSiswa->where('nilai_id', $sub?->nilai_id)->first()?->poin ?? 0;
+                // Ambil semua nilai_id dari attribute ini
+                $nilaiIds = \App\Models\Nilai::where('attribute_id', $attribute->id)->pluck('id')->toArray();
+
+                // Ambil poin siswa dari nilai_id yang sesuai
+                $nilaiMentah = $siswa->nilaiSiswa->firstWhere(fn($n) => in_array($n->nilai_id, $nilaiIds))?->poin ?? 0;
 
                 if ($attribute->tipe === 'cost') {
                     $min = $minAll[$attribute->id] ?? 1;
@@ -36,6 +39,7 @@ class CalculationRepository
                     $nilai[$attribute->id] = $max > 0 ? $nilaiMentah / $max : 0;
                 }
             }
+
 
             session()->put("normalisasi_matriks.{$siswa->id}", $nilai);
 
@@ -86,24 +90,25 @@ class CalculationRepository
         $siswas = Mahasiswa::with('nilaiSiswa')->where('tahun_ajaran', $tahun_ajaran)->get();
 
         foreach ($attributes as $attribute) {
+            $nilaiIds = \App\Models\Nilai::where('attribute_id', $attribute->id)->pluck('id')->toArray();
             $nilaiSemua = [];
 
             foreach ($siswas as $siswa) {
                 $nilaiMentah = $siswa->nilaiSiswa
-                    ->whereIn('nilai_id', $attribute->subAttribute->pluck('nilai_id'))
-                    ->sum('poin');
+                    ->firstWhere(fn($n) => in_array($n->nilai_id, $nilaiIds))
+                    ?->poin ?? 0;
 
                 if ($nilaiMentah > 0) {
                     $nilaiSemua[] = $nilaiMentah;
                 }
             }
 
-
             $max[$attribute->id] = count($nilaiSemua) > 0 ? max($nilaiSemua) : 1;
         }
 
         return $max;
     }
+
 
 
     private static function getMinPerAttribute($tahun_ajaran)
@@ -113,12 +118,13 @@ class CalculationRepository
         $siswas = Mahasiswa::with('nilaiSiswa')->where('tahun_ajaran', $tahun_ajaran)->get();
 
         foreach ($attributes as $attribute) {
+            $nilaiIds = \App\Models\Nilai::where('attribute_id', $attribute->id)->pluck('id')->toArray();
             $nilaiSemua = [];
 
             foreach ($siswas as $siswa) {
                 $nilaiMentah = $siswa->nilaiSiswa
-                    ->whereIn('nilai_id', $attribute->subAttribute->pluck('nilai_id'))
-                    ->sum('poin');
+                    ->firstWhere(fn($n) => in_array($n->nilai_id, $nilaiIds))
+                    ?->poin ?? 0;
 
                 if ($nilaiMentah > 0) {
                     $nilaiSemua[] = $nilaiMentah;
@@ -130,6 +136,7 @@ class CalculationRepository
 
         return $min;
     }
+
 
     public static function hitungQiSementara(Mahasiswa $siswa, array $matriks)
     {
