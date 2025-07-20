@@ -13,18 +13,41 @@ class HasilController extends Controller
 {
     public function index()
     {
+        // Ambil daftar tahun ajaran dari mahasiswa
         $tahunAjarans = Mahasiswa::select('tahun_ajaran')->distinct()->orderBy('tahun_ajaran', 'desc')->pluck('tahun_ajaran');
         $tahun_ajaran = request('tahun_ajaran', $tahunAjarans->first());
 
+        // Ambil kuota untuk tahun ajaran aktif
+        $kuota = \App\Models\Kuota::where('tahun_ajaran', $tahun_ajaran)->first()?->jumlah ?? 0;
+
+        // Ambil data hasil dengan mahasiswa
         $data = Hasil::with('mahasiswa')
             ->whereHas('mahasiswa', fn($q) => $q->where('tahun_ajaran', $tahun_ajaran))
             ->orderByDesc('qi')
-            ->paginate(10);
+            ->get();
 
-        $status = Hasil::whereHas('mahasiswa', fn($q) => $q->where('tahun_ajaran', $tahun_ajaran))
-            ->first()?->status ?? 0;
+        // Tandai status diterima/tidak
+        $data->each(function ($item, $index) use ($kuota) {
+            $item->status_diterima = ($index < $kuota) ? 'Diterima' : 'Tidak Diterima';
+        });
 
-        return view('pages.hasil.index', compact('data', 'tahunAjarans', 'tahun_ajaran', 'status'));
+        // Pagination manual (jika kamu ingin tetap pakai paginate, perlu custom Collection)
+        $perPage = 10;
+        $page = request()->get('page', 1);
+        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $data->forPage($page, $perPage),
+            $data->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('pages.hasil.index', [
+            'data' => $paginated,
+            'tahunAjarans' => $tahunAjarans,
+            'tahun_ajaran' => $tahun_ajaran,
+            'status' => $kuota,
+        ]);
     }
 
 

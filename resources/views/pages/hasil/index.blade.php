@@ -68,6 +68,7 @@
                         <th scope="col" class="px-6 py-3">Nama Siswa</th>
                         <th scope="col" class="px-6 py-3">Jenis Kelamin</th>
                         <th scope="col" class="px-6 py-3">Hasil Qi</th>
+                        <th scope="col" class="px-6 py-3">Status</th> {{-- Kolom baru --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -80,6 +81,13 @@
                         <td class="px-6 py-4">{{ $row->mahasiswa->nama }}</td>
                         <td class="px-6 py-4">{{ $row->mahasiswa->jenis_kelamin }}</td>
                         <td class="px-6 py-4">{{ number_format($row->qi, 2) }}</td>
+                        <td class="px-6 py-4">
+                            @if ($row->status_diterima === 'Diterima')
+                            <span class="text-green-600 font-semibold">Diterima</span>
+                            @else
+                            <span class="text-red-600 font-semibold">Tidak Diterima</span>
+                            @endif
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>

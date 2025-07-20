@@ -8,6 +8,7 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\HasilController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JurusanController;
+use App\Http\Controllers\KuotaController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\NilaiAttributeController;
 use App\Http\Controllers\NilaiController;
@@ -90,6 +91,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->group(function
     Route::post('perhitungan/save', [PerhitunganController::class, 'save'])->name('perhitungan.save');
 
     Route::post('/hasil/{tahun_ajaran}/approve', [HasilController::class, 'approve'])->name('hasil.approve');
+
+    Route::resource('kuota', KuotaController::class)->only(['store', 'update', 'destroy']);
+
+
 
 
     Route::fallback(function () {
