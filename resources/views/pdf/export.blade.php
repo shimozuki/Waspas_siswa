@@ -73,28 +73,31 @@
 
     <div class="judul">HASIL PERANGKINGAN TAHUN AJARAN {{$data[0]->tahun_ajaran}}</div>
 
-    <table>
+    <table width="100%" cellspacing="0" cellpadding="6" border="1">
         <thead>
             <tr>
                 <th>Ranking</th>
                 <th>No Reg</th>
-                <th>Nama Siswa</th>
+                <th>Nama</th>
                 <th>Jenis Kelamin</th>
-                <th>Asal Kelas</th>
+                <th>Hasil Qi</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($data as $row)
+            @foreach($data as $row)
             <tr>
                 <td>{{ $row->rank }}</td>
                 <td>{{ $row->mahasiswa->no_reg }}</td>
                 <td>{{ $row->mahasiswa->nama }}</td>
                 <td>{{ $row->mahasiswa->jenis_kelamin }}</td>
-                <td>{{ $row->mahasiswa->asal_kelas }}</td>
+                <td>{{ number_format($row->qi, 4) }}</td>
+                <td>{{ $row->status_diterima }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
+
 
 </body>
 

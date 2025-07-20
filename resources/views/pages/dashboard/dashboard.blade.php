@@ -11,7 +11,7 @@
             <x-dashboard.dashboard-card-users :mahasiswa="$data['mahasiswa']" />
             <x-dashboard.dashboard-card-jurusan :jurusan="$data['jurusan']" />
             <x-dashboard.dashboard-card-kriteria :kriteria="$data['kriteria']" />
-
+            @if (auth()->user()->id == '1')
             {{-- Form Penentuan Kuota --}}
             <div class="col-span-12 lg:col-span-12 xl:col-span-8 bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-lg font-semibold text-gray-800 mb-4">Penentuan Kuota Penerimaan</h2>
@@ -49,6 +49,8 @@
                     </div>
                 </form>
             </div>
+            @endif
+
 
             {{-- Tabel Kuota Tersimpan --}}
             <div class="col-span-12 xl:col-span-8 bg-white p-6 rounded-lg shadow-md">
@@ -64,7 +66,9 @@
                                 <th class="px-4 py-2">#</th>
                                 <th class="px-4 py-2">Tahun Ajaran</th>
                                 <th class="px-4 py-2">Jumlah Kuota</th>
+                                @if (auth()->user()->id == '1')
                                 <th class="px-4 py-2">Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody class="text-sm divide-y divide-gray-200">
@@ -73,6 +77,7 @@
                                 <td class="px-4 py-2">{{ $index + 1 }}</td>
                                 <td class="px-4 py-2">{{ $kuota->tahun_ajaran }}</td>
                                 <td class="px-4 py-2">{{ $kuota->jumlah }}</td>
+                                @if (auth()->user()->id == '1')
                                 <td class="px-4 py-2 flex items-center gap-2">
                                     <!-- Tombol Edit -->
                                     <button
@@ -89,6 +94,7 @@
                                         <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Hapus</button>
                                     </form>
                                 </td>
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>

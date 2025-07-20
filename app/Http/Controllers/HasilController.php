@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hasil;
 use App\Models\Jurusan;
+use App\Models\Kuota;
 use App\Models\Mahasiswa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -64,13 +65,22 @@ class HasilController extends Controller
 
     public function export($tahun_ajaran)
     {
+        // Ambil kuota berdasarkan tahun ajaran
+        $kuota = Kuota::where('tahun_ajaran', $tahun_ajaran)->first()?->jumlah ?? 0;
 
+        // Ambil data hasil ranking
         $data = Hasil::with(['mahasiswa:id,no_reg,nama,jenis_kelamin,asal_kelas'])
             ->whereHas('mahasiswa', function ($q) use ($tahun_ajaran) {
                 $q->where('tahun_ajaran', $tahun_ajaran);
             })
-            ->orderBy('rank', 'asc')
+            ->orderBy('qi', 'desc') // pastikan urut dari tertinggi
             ->get();
+
+        // Tambahkan ranking dan status diterima
+        $data->each(function ($item, $index) use ($kuota) {
+            $item->rank = $index + 1;
+            $item->status_diterima = ($index < $kuota) ? 'Diterima' : 'Tidak Diterima';
+        });
 
         return Pdf::loadView('pdf.export', compact('data', 'tahun_ajaran'))
             ->setPaper('a4', 'portrait')
